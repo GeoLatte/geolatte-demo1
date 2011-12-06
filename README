@@ -1,0 +1,90 @@
+This project contains a demo of
+- geolatte-featureserver
+
+
+Prerequisites
+- PostGres + PostGis installed
+- Running tomcat (v6/7)
+- European rivers database
+
+Setup geolatte-featureserver
+
+1) Download the featureserver war from https://oss.sonatype.org/content/groups/public/org/geolatte/geolatte-featureserver/0.4-SNAPSHOT/
+   Demo was tested with geolatte-featureserver-0.4-20111129.062659-3.war
+2) Create a featureserver configuration file (instructions on http://www.geolatte.org/confluence/display/fserv/FeatureServer+configuration)
+   You can use the featureserver.xml file included in this project as a basis.
+3) Make sure Tomcat knows the config file. E.g., add JAVA_OPTS="-Dgeolatte.fs.config=/Library/Tomcat/apache-tomcat-7.0.19/webapps/featureserver.xml"
+   to the startup script, typically catalina.sh in the bin dir.
+3) Deploy featureserver in Tomcat on path /featureserver. Easiest way to do this is by renaming the downloaded war to
+   featureserver.war and copying that file to Tomcat's webapps directory. Start Tomcat.
+4) Check whether everything works by browsing to localhost:port/featureserver. You should get a welcome message. You can
+   query tables from the browser window as well (see http://www.geolatte.org/confluence/display/fserv/Rest+API). E.g.,
+   locahost:port/featureserver/rest/tables should work.
+
+
+Setup OSM table
+
+1) Use Osmosis to import osm data to postgres
+2) Create more useful tables:
+
+Places - Cities and towns
+-------------------------
+
+CREATE TABLE places
+(
+id int8,
+place text,
+name text,
+PRIMARY KEY (id)
+);
+
+SELECT AddGeometryColumn('places', 'geom', 4326, 'POINT', 2 );
+
+insert into places (id, place)
+select n.id, t.v
+from nodes n join node_tags t on n.id = t.node_id
+group by n.id, t.k, t.v
+having t.k = 'place';
+
+UPDATE places
+SET name = (SELECT t.v from nodes n join node_tags t on n.id = t.node_id
+            where n.id = places.id and
+                  t.k = 'name');
+
+UPDATE places
+SET geom = (SELECT geom from nodes where id = places.id);
+
+Waterways
+---------
+
+CREATE TABLE waterways
+(
+id int8,
+waterway text,
+name text,
+beginnode_id int8,
+endnode_id int8,
+PRIMARY KEY (id)
+);
+
+SELECT AddGeometryColumn('waterways', 'geom', 4326, 'LINESTRING', 2 );
+
+insert into waterways (id, waterway)
+select w.id, t.v
+from ways w join way_tags t on w.id = t.way_id
+group by w.id, t.k, t.v
+having t.k = 'waterway';
+
+UPDATE waterways
+SET name = (SELECT t.v from ways n join way_tags t on n.id = t.way_id
+            where n.id = waterways.id and
+                  t.k = 'name'),
+    geom = (SELECT linestring from ways where id = waterways.id),
+    beginnode_id = (SELECT beginnode from ways where id = waterways.id),
+    endnode_id = (SELECT endnode from ways where id = waterways.id);
+
+delete from waterways
+where waterway = 'drain' OR waterway = 'dock' OR waterway = 'lock_gate' OR waterway = 'boatyard' OR waterway = 'weir' OR waterway = 'dam';
+
+delete from waterways
+where geom IS NULL;

@@ -19,35 +19,29 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.services;
+package org.geolatte.demo1.util;
 
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 
-/**
- * <p>
- * Application class for the flooding app.
- * </p>
- *
- * @author Bert Vanhooff
- * @author <a href="http://www.qmino.com">Qmino bvba</a>
- */
-public class FloodingApplication extends Application {
-   private Set<Object> singletons = new HashSet<Object>();
-   private Set<Class<?>> empty = new HashSet<Class<?>>();
+public class HibernateUtil {
 
-    public FloodingApplication() {
+    private static final SessionFactory sessionFactory = buildSessionFactory();
 
+    private static SessionFactory buildSessionFactory() {
+        try {
+            // Create the SessionFactory from hibernate.cfg.xml
+            return new Configuration().configure().buildSessionFactory();
+        }
+        catch (Throwable ex) {
+            // Make sure you log the exception, as it might be swallowed
+            System.err.println("Initial SessionFactory creation failed." + ex);
+            throw new ExceptionInInitializerError(ex);
+        }
     }
 
-   @Override
-   public Set<Class<?>> getClasses() {
-      return empty;
-   }
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
 
-   @Override
-   public Set<Object> getSingletons() {
-      return singletons;
-   }
 }

@@ -19,35 +19,43 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.services;
+package org.geolatte.demo1.transformers;
 
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+import com.vividsolutions.jts.geom.Geometry;
+import org.geolatte.common.transformer.Transformation;
+import org.geolatte.common.transformer.TransformationException;
 
 /**
  * <p>
- * Application class for the flooding app.
+ * No comment provided yet for this class.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
+ * @since SDK1.5
  */
-public class FloodingApplication extends Application {
-   private Set<Object> singletons = new HashSet<Object>();
-   private Set<Class<?>> empty = new HashSet<Class<?>>();
+public class Buffer implements Transformation<Geometry, Geometry> {
 
-    public FloodingApplication() {
-
+    public Buffer() {
     }
 
-   @Override
-   public Set<Class<?>> getClasses() {
-      return empty;
-   }
+    /**
+     * Transforms a single input object into an output object.
+     *
+     * @param input The given input
+     * @return The output of the transformation
+     * @throws org.geolatte.common.transformer.TransformationException
+     *          If for some reason, the transformation can not be executed
+     */
+    @Override
+    public Geometry transform(Geometry input) throws TransformationException {
 
-   @Override
-   public Set<Object> getSingletons() {
-      return singletons;
-   }
+        try {
+            Geometry buffer = input.buffer(1);
+            buffer.setSRID(input.getSRID());
+            return buffer;
+        } catch (Exception e) {
+            throw new TransformationException(e, input);
+        }
+    }
 }

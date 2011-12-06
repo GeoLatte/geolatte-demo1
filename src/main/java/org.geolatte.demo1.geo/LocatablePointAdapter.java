@@ -19,35 +19,36 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.services;
+package org.geolatte.demo1.geo;
 
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+import org.geolatte.graph.Locatable;
 
 /**
  * <p>
- * Application class for the flooding app.
+ * No comment provided yet for this class.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
+ * @since SDK1.5
  */
-public class FloodingApplication extends Application {
-   private Set<Object> singletons = new HashSet<Object>();
-   private Set<Class<?>> empty = new HashSet<Class<?>>();
+public class LocatablePointAdapter implements Locatable {
 
-    public FloodingApplication() {
+    private float x;
+    private float y;
 
+    public LocatablePointAdapter(float x, float y) {
+        this.x = x;
+        this.y = y;
     }
 
-   @Override
-   public Set<Class<?>> getClasses() {
-      return empty;
-   }
+    @Override
+    public float getX() {
+        return x;
+    }
 
-   @Override
-   public Set<Object> getSingletons() {
-      return singletons;
-   }
+    @Override
+    public float getY() {
+        return y;
+    }
 }

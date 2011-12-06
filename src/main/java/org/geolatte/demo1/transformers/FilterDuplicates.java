@@ -19,35 +19,29 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.services;
+package org.geolatte.demo1.transformers;
 
-import javax.ws.rs.core.Application;
+import org.geolatte.common.transformer.Transformation;
+import org.geolatte.common.transformer.TransformationException;
+
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * <p>
- * Application class for the flooding app.
+ * No comment provided yet for this class.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
+ * @since SDK1.5
  */
-public class FloodingApplication extends Application {
-   private Set<Object> singletons = new HashSet<Object>();
-   private Set<Class<?>> empty = new HashSet<Class<?>>();
+public class FilterDuplicates<T> implements Transformation<T, Boolean> {
 
-    public FloodingApplication() {
+    private HashSet<T> objects = new HashSet<T>();
 
+    @Override
+    public Boolean transform(T input) throws TransformationException {
+
+        return objects.add(input);
     }
-
-   @Override
-   public Set<Class<?>> getClasses() {
-      return empty;
-   }
-
-   @Override
-   public Set<Object> getSingletons() {
-      return singletons;
-   }
 }

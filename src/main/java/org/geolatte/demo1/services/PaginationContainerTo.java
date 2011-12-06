@@ -21,33 +21,35 @@
 
 package org.geolatte.demo1.services;
 
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * <p>
- * Application class for the flooding app.
+ * No comment provided yet for this class.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
+ * @since SDK1.5
  */
-public class FloodingApplication extends Application {
-   private Set<Object> singletons = new HashSet<Object>();
-   private Set<Class<?>> empty = new HashSet<Class<?>>();
+public class PaginationContainerTo<T> {
 
-    public FloodingApplication() {
+    private int total;
+    private List<T> items;
 
+    public int getTotal() {
+        return total;
     }
 
-   @Override
-   public Set<Class<?>> getClasses() {
-      return empty;
-   }
+    public void setTotal(int total) {
+        this.total = total;
+    }
 
-   @Override
-   public Set<Object> getSingletons() {
-      return singletons;
-   }
+    public List<T> getItems() {
+        return items;
+    }
+
+    public void setItems(List<T> items) {
+        this.items = items;
+    }
 }

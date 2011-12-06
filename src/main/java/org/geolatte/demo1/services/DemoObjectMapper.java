@@ -21,33 +21,27 @@
 
 package org.geolatte.demo1.services;
 
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.Set;
+import org.geolatte.common.dataformats.json.jackson.JsonMapper;
+
+import javax.ws.rs.ext.Provider;
 
 /**
  * <p>
- * Application class for the flooding app.
+ * No comment provided yet for this class.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
+ * @since SDK1.5
  */
-public class FloodingApplication extends Application {
-   private Set<Object> singletons = new HashSet<Object>();
-   private Set<Class<?>> empty = new HashSet<Class<?>>();
+@Provider
+public class DemoObjectMapper extends JsonMapper {
 
-    public FloodingApplication() {
 
+    /**
+     * Default constructor
+     */
+    public DemoObjectMapper() {
+        super(false, true);
     }
-
-   @Override
-   public Set<Class<?>> getClasses() {
-      return empty;
-   }
-
-   @Override
-   public Set<Object> getSingletons() {
-      return singletons;
-   }
 }
