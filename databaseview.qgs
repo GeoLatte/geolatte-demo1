@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>degrees</units>
         <extent>
-            <xmin>4.151126</xmin>
-            <ymin>50.849734</ymin>
-            <xmax>4.642326</xmax>
-            <ymax>51.128463</ymax>
+            <xmin>1.833157</xmin>
+            <ymin>50.898016</ymin>
+            <xmax>4.676710</xmax>
+            <ymax>52.012934</ymax>
         </extent>
         <projections>0</projections>
         <destinationsrs>
@@ -143,14 +143,15 @@
                 <sizescale field=""/>
             </renderer-v2>
             <customproperties/>
-            <displayfield></displayfield>
+            <displayfield>name</displayfield>
             <label>0</label>
+            <labelfield>name</labelfield>
             <labelattributes>
-                <label fieldname="" text="Label"/>
+                <label fieldname="name" text="Label"/>
                 <family fieldname="" name="Lucida Grande"/>
                 <size fieldname="" units="pt" value="12"/>
                 <bold fieldname="" on="0"/>
-                <italic fieldname="" on="0"/>
+                <italic fieldname="name" on="0"/>
                 <underline fieldname="" on="0"/>
                 <strikeout fieldname="" on="0"/>
                 <color fieldname="" red="0" blue="0" green="0"/>
@@ -165,6 +166,11 @@
                 <multilineenabled fieldname="" on=""/>
                 <selectedonly on=""/>
             </labelattributes>
+            <edittypes>
+                <edittype type="0" name="id"/>
+                <edittype type="0" name="name"/>
+                <edittype type="0" name="waterway"/>
+            </edittypes>
             <editform></editform>
             <editforminit></editforminit>
             <annotationform></annotationform>

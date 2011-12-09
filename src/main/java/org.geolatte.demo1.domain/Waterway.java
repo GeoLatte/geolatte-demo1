@@ -21,7 +21,8 @@
 
 package org.geolatte.demo1.domain;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.jts.JTS;
 
 /**
  * <p>
@@ -35,7 +36,7 @@ import com.vividsolutions.jts.geom.Geometry;
 public class Waterway {
 
     private long id;
-    private Geometry geometry;
+    private com.vividsolutions.jts.geom.Geometry geometry;
     private String name;
     private Node beginNode;
     private Node endNode;
@@ -53,10 +54,18 @@ public class Waterway {
     }
 
     public Geometry getGeometry() {
-        return geometry;
+        return JTS.from(geometry);
     }
 
     public void setGeometry(Geometry geometry) {
+        this.geometry = JTS.to(geometry);
+    }
+
+    public com.vividsolutions.jts.geom.Geometry getJTSGeometry() {
+        return geometry;
+    }
+
+    public void setJTSGeometry(com.vividsolutions.jts.geom.Geometry geometry) {
         this.geometry = geometry;
     }
 

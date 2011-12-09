@@ -21,11 +21,12 @@
 
 package org.geolatte.demo1.transformers;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 import org.geolatte.common.transformer.OneToManyTransformation;
 import org.geolatte.common.transformer.TransformationException;
 import org.geolatte.demo1.domain.Place;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.Point;
+import org.geolatte.geom.jts.JTS;
 import org.hibernate.Session;
 import org.hibernatespatial.criterion.SpatialRestrictions;
 
@@ -57,7 +58,9 @@ public class GetCitiesWithinBounds implements OneToManyTransformation<Geometry, 
 
         try {
 
-            return session.createCriteria(Place.class).add(SpatialRestrictions.within("geometry", input)).list().iterator();
+            return session.createCriteria(Place.class)
+                          .add(SpatialRestrictions.within("geometry", JTS.to(input)))
+                          .list().iterator();
         } catch (Exception e) {
             throw new TransformationException(e, input);
         }

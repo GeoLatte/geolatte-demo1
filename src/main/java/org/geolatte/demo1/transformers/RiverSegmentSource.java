@@ -22,7 +22,6 @@
 package org.geolatte.demo1.transformers;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 import org.geolatte.common.transformer.TransformerSource;
 import org.geolatte.demo1.domain.Node;
 import org.geolatte.demo1.domain.Waterway;
@@ -30,6 +29,8 @@ import org.geolatte.demo1.geo.CrsConvertor;
 import org.geolatte.demo1.geo.CrsConvertorFactory;
 import org.geolatte.demo1.geo.GeoTransformationException;
 import org.geolatte.geom.Envelope;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.jts.JTS;
 import org.geolatte.graph.*;
 import org.geolatte.graph.algorithms.GraphAlgorithm;
 import org.geolatte.graph.algorithms.GraphAlgorithms;
@@ -52,7 +53,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
 
     private static LocateableGraph<Node, Geometry> graph;
     private Locatable startPoint;
-    private static CrsConvertor toSourceConvertoronvertor;
+    private static CrsConvertor toSourceConvertor;
 
     public RiverSegmentSource(Locatable startPoint, Session session) {
 
@@ -76,7 +77,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
             CrsConvertor toTargetConvertoronvertor = CrsConvertorFactory.createConvertor(
                     sourceSrid,
                     targetSrid);
-            toSourceConvertoronvertor = CrsConvertorFactory.createConvertor(
+            toSourceConvertor = CrsConvertorFactory.createConvertor(
                     targetSrid,
                     sourceSrid);
 
@@ -86,8 +87,8 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
 
             for (Waterway waterway : waterways) {
 
-                Geometry convertedGeometry = toTargetConvertoronvertor.convert(waterway.getGeometry());
-                waterway.setGeometry(convertedGeometry);
+                com.vividsolutions.jts.geom.Geometry convertedGeometry = toTargetConvertoronvertor.convert(waterway.getJTSGeometry());
+                waterway.setJTSGeometry(convertedGeometry);
 
                 if (waterway.getBeginNode() != null && waterway.getEndNode() != null) {
                     graphBuilder.addEdge(waterway.getBeginNode(), waterway.getEndNode(), new BasicEdgeWeight(1), waterway.getGeometry());
@@ -124,7 +125,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
             }
 
             try {
-                geometries.add(toSourceConvertoronvertor.convert(iterator.getCurrentEdge()));
+                geometries.add(JTS.from(toSourceConvertor.convert(JTS.to(iterator.getCurrentEdge()))));
             } catch (GeoTransformationException e) {
                 e.printStackTrace();
             }

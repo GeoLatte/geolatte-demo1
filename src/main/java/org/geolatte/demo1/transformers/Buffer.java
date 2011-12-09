@@ -21,9 +21,9 @@
 
 package org.geolatte.demo1.transformers;
 
-import com.vividsolutions.jts.geom.Geometry;
 import org.geolatte.common.transformer.Transformation;
 import org.geolatte.common.transformer.TransformationException;
+import org.geolatte.geom.Geometry;
 
 /**
  * <p>
@@ -52,7 +52,7 @@ public class Buffer implements Transformation<Geometry, Geometry> {
 
         try {
             Geometry buffer = input.buffer(1);
-            buffer.setSRID(input.getSRID());
+            //buffer.setSRID(input.getSRID());
             return buffer;
         } catch (Exception e) {
             throw new TransformationException(e, input);

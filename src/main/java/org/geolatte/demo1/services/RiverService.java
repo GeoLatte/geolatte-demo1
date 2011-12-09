@@ -21,19 +21,18 @@
 
 package org.geolatte.demo1.services;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
 import org.geolatte.common.transformer.ClosedTransformerChain;
 import org.geolatte.common.transformer.SimpleTransformerSink;
 import org.geolatte.common.transformer.TransformerChainFactory;
 import org.geolatte.demo1.domain.Place;
-import org.geolatte.demo1.domain.Waterway;
 import org.geolatte.demo1.geo.LocatablePointAdapter;
 import org.geolatte.demo1.transformers.Buffer;
 import org.geolatte.demo1.transformers.FilterDuplicates;
 import org.geolatte.demo1.transformers.GetCitiesWithinBounds;
 import org.geolatte.demo1.transformers.RiverSegmentSource;
 import org.geolatte.demo1.util.HibernateUtil;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.Point;
 import org.hibernate.Session;
 
 import javax.ws.rs.GET;
@@ -55,31 +54,6 @@ import java.util.List;
  */
 @Path("/rest/river")
 public class RiverService {
-
-
-    @Path("/")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<RiverTo> getRivers() {
-
-        List<RiverTo> result = null;
-
-        try {
-            // Begin unit of work
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-            session.beginTransaction();
-
-            result = session.createCriteria(Waterway.class).list();
-
-            // End unit of work
-            session.getTransaction().commit();
-        } catch (Exception ex) {
-            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
-        }
-
-
-        return result;
-    }
 
     @Path("/cities")
     @GET

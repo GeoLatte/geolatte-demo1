@@ -29,8 +29,8 @@
         <id name="id" column="id"/>
 
         <property name="name" column="name"/>
-        <property name="geometry" type="org.hibernatespatial.GeometryUserType" column="geom"  access="field">
-        </property>
+        <!-- Map to field so we can keep the interface geolatte.geom -->
+        <property name="geometry" type="org.hibernatespatial.GeometryUserType" column="geom" access="field"/>
 
         <many-to-one name="beginNode" column="beginnode_id" lazy="false" not-found="ignore"/>
         <many-to-one name="endNode" column="endnode_id" lazy="false" not-found="ignore"/>
