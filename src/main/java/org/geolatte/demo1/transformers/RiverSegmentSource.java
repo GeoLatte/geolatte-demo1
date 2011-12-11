@@ -25,9 +25,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import org.geolatte.common.transformer.TransformerSource;
 import org.geolatte.demo1.domain.Node;
 import org.geolatte.demo1.domain.Waterway;
-import org.geolatte.demo1.geo.CrsConvertor;
-import org.geolatte.demo1.geo.CrsConvertorFactory;
-import org.geolatte.demo1.geo.GeoTransformationException;
+import org.geolatte.demo1.util.CrsConvertor;
+import org.geolatte.demo1.util.CrsConvertorFactory;
+import org.geolatte.demo1.util.GeoTransformationException;
+import org.geolatte.demo1.util.LocatablePointAdapter;
 import org.geolatte.geom.Envelope;
 import org.geolatte.geom.Geometry;
 import org.geolatte.geom.jts.JTS;
@@ -55,12 +56,6 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
     private Locatable startPoint;
     private static CrsConvertor toSourceConvertor;
 
-    public RiverSegmentSource(Locatable startPoint, Session session) {
-
-        this.startPoint = startPoint;
-        buildGraph(session);
-    }
-
     // Build the waterway network once
     private static void buildGraph(Session session) {
 
@@ -73,25 +68,35 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
 
         try {
             final int sourceSrid = waterways.get(0).getGeometry().getSRID();
-            final int targetSrid = 31300;
-            CrsConvertor toTargetConvertoronvertor = CrsConvertorFactory.createConvertor(
+            final int targetSrid = 31370;
+            CrsConvertor toTargetConvertor = CrsConvertorFactory.createConvertor(
                     sourceSrid,
                     targetSrid);
             toSourceConvertor = CrsConvertorFactory.createConvertor(
                     targetSrid,
                     sourceSrid);
 
-            Coordinate[] bbox = toTargetConvertoronvertor.convert(new Coordinate[] {new Coordinate(2.33, 6.6), new Coordinate(49.3, 51.6)});
+            Coordinate[] bbox = toTargetConvertor.convert(new Coordinate[] {new Coordinate(2.33, 49.3), new Coordinate(6.6, 51.6)});
 
-            GraphBuilder<Node, Geometry> graphBuilder = Graphs.createGridIndexedGraphBuilder(new Envelope(bbox[0].x, bbox[0].y, bbox[1].x, bbox[1].y), 20000);
+            Envelope envelope = new Envelope(bbox[0].x, bbox[0].y, bbox[1].x, bbox[1].y);
+            GraphBuilder<Node, Geometry> graphBuilder = Graphs.createGridIndexedGraphBuilder(envelope, 20000);
 
             for (Waterway waterway : waterways) {
 
-                com.vividsolutions.jts.geom.Geometry convertedGeometry = toTargetConvertoronvertor.convert(waterway.getJTSGeometry());
-                waterway.setJTSGeometry(convertedGeometry);
+                // Convert points to lambert
+                waterway.setJTSGeometry(toTargetConvertor.convert(waterway.getJTSGeometry()));
+                if (waterway.getBeginNode().getJTSLocation().getSRID() != targetSrid) {
+                    waterway.getBeginNode().setJTSLocation(toTargetConvertor.convert(waterway.getBeginNode().getJTSLocation()));
+                }
+                if (waterway.getEndNode().getJTSLocation().getSRID() != targetSrid) {
+                    waterway.getEndNode().setJTSLocation(toTargetConvertor.convert(waterway.getEndNode().getJTSLocation()));
+                }
+
 
                 if (waterway.getBeginNode() != null && waterway.getEndNode() != null) {
-                    graphBuilder.addEdge(waterway.getBeginNode(), waterway.getEndNode(), new BasicEdgeWeight(1), waterway.getGeometry());
+                    //if (envelope.contains(waterway.getBeginNode().getLocation()) &&  envelope.contains(waterway.getEndNode().getLocation())) {
+                        graphBuilder.addEdge(waterway.getBeginNode(), waterway.getEndNode(), new BasicEdgeWeight(1), waterway.getGeometry());
+                    //}
                 }
             }
 
@@ -106,15 +111,30 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
         }
     }
 
+    public RiverSegmentSource(float x, float y, Session session) {
+
+        try {
+            // Convet from google to lambert (what we use internally in the graph)
+            CrsConvertor convertor = CrsConvertorFactory.createConvertor(900913, 31370);
+            Coordinate[] coordinate = convertor.convert(new Coordinate[]{new Coordinate(y, x)});
+            this.startPoint = new LocatablePointAdapter((float)coordinate[0].x, (float)coordinate[0].y);
+            buildGraph(session);
+        } catch (GeoTransformationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
     @Override
     protected Iterable<Geometry> output() {
 
-        Node startNode = graph.getClosestNodes(startPoint, 1, 3000).get(0).getWrappedNode();
+        // search closest nodes in a range of 1km from the startpoint
+        List<InternalNode<Node, Geometry>> nodesFound = graph.getClosestNodes(startPoint, 1, 1000);
+        if (nodesFound.size() == 0) { return new ArrayList<Geometry>(); }
+        Node startNode = nodesFound.get(0).getWrappedNode();
 
+        // Create and execute breath-first-limited search (find all routes downstream of the startingpoint)
         GraphAlgorithm<GraphTree<Node, Geometry>> bfsTree = GraphAlgorithms.createBFS(graph, startNode, 200, 0);
-
-        List<Geometry> geometries = new ArrayList<Geometry>();
-
+        List<Geometry> resultGeometries = new ArrayList<Geometry>();
         bfsTree.execute();
         GraphTreeIterator<Node, Geometry> iterator = bfsTree.getResult().iterator();
         while (iterator.next()) {
@@ -125,12 +145,12 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
             }
 
             try {
-                geometries.add(JTS.from(toSourceConvertor.convert(JTS.to(iterator.getCurrentEdge()))));
+                resultGeometries.add(JTS.from(toSourceConvertor.convert(JTS.to(iterator.getCurrentEdge()))));
             } catch (GeoTransformationException e) {
                 e.printStackTrace();
             }
         }
 
-        return geometries;
+        return resultGeometries;
     }
 }

@@ -1,4 +1,4 @@
-<!--
+<%--
   ~ This file is part of the GeoLatte project.
   ~
   ~     GeoLatte is free software: you can redistribute it and/or modify
@@ -17,20 +17,31 @@
   ~ Copyright (C) 2010 - 2010 and Ownership of code is shared by:
   ~ Qmino bvba - Romeinsestraat 18 - 3001 Heverlee  (http://www.qmino.com)
   ~ Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
-  -->
+  --%>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-    <title>geolatte demo</title>
+    <title>geolatte-featureserver demo</title>
+    <script type="text/javascript" src="js/lib/jquery-1.6.2.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery-ui-1.8.16.custom.min.js"></script>
+    <script type="text/javascript" src="js/lib/jquery.simplemodal.1.4.1.min.js"></script>
+    <script type="text/javascript" src="js/lib/proj4js-combined.js"></script>
+    <script type="text/javascript" src="js/lib/laea.js"></script>
+    <script type="text/javascript" src="js/lib/OpenLayers.js"></script>
+    <script type="text/javascript" src="js/flooding.js"></script>
+    <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
 <body>
 
-<ul>
-<li><a href="featureserverdemo.jsp">featureserver demo</a></li>
-<li><a href="floodingdemo.jsp">Flooding (common, graph, geom, hibernate spatial, etc.)</a></li>
-</ul>
+<!-- Placeholder for the map control -->
+<div style="width:100%; height:100%" id="map"></div>
+
+<div id="logo"></div>
+
+<div id="panel">
+    <h1>Flooding demo</h1>
+    <p>Calculates the flooding area of a river starting from a given point and visualises the endangered communities</p>
+</div>
 
 </body>
 </html>

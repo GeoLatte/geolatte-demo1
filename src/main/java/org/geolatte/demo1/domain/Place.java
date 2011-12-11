@@ -19,9 +19,11 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.geo;
+package org.geolatte.demo1.domain;
 
-import org.geolatte.graph.Locatable;
+
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.jts.JTS;
 
 /**
  * <p>
@@ -32,23 +34,44 @@ import org.geolatte.graph.Locatable;
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
  * @since SDK1.5
  */
-public class LocatablePointAdapter implements Locatable {
+public class Place {
 
-    private float x;
-    private float y;
+    private long id;
+    private String name;
+    private com.vividsolutions.jts.geom.Geometry geometry;
 
-    public LocatablePointAdapter(float x, float y) {
-        this.x = x;
-        this.y = y;
+    public Place() {
     }
 
-    @Override
-    public float getX() {
-        return x;
+    public long getId() {
+        return id;
     }
 
-    @Override
-    public float getY() {
-        return y;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Geometry getGeometry() {
+        return JTS.from(geometry);
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = JTS.to(geometry);
+    }
+
+    public com.vividsolutions.jts.geom.Geometry getJTSGeometry() {
+        return geometry;
+    }
+
+    public void setJTSGeometry(com.vividsolutions.jts.geom.Geometry geometry) {
+        this.geometry = geometry;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

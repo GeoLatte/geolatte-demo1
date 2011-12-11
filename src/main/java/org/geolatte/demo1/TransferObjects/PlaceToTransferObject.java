@@ -19,11 +19,16 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.transformers;
+package org.geolatte.demo1.TransferObjects;
 
+import org.geolatte.common.dataformats.json.GeoJsonToFactory;
 import org.geolatte.common.transformer.Transformation;
 import org.geolatte.common.transformer.TransformationException;
-import org.geolatte.geom.Geometry;
+import org.geolatte.demo1.domain.Place;
+import org.geolatte.demo1.util.CrsConvertor;
+import org.geolatte.demo1.util.CrsConvertorFactory;
+import org.geolatte.demo1.util.GeoTransformationException;
+import org.geolatte.geom.jts.JTS;
 
 /**
  * <p>
@@ -34,28 +39,27 @@ import org.geolatte.geom.Geometry;
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
  * @since SDK1.5
  */
-public class Buffer implements Transformation<Geometry, Geometry> {
+public class PlaceToTransferObject implements Transformation<Place, PlaceTo> {
 
-    public Buffer() {
+    private GeoJsonToFactory geoJsonToFactory = new GeoJsonToFactory();
+    private static CrsConvertor toTargetConvertor;
+
+    static {
+        try {
+            toTargetConvertor = CrsConvertorFactory.createConvertor(4326, 900913);
+        } catch (GeoTransformationException e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Transforms a single input object into an output object.
-     *
-     * @param input The given input
-     * @return The output of the transformation
-     * @throws org.geolatte.common.transformer.TransformationException
-     *          If for some reason, the transformation can not be executed
-     */
+
     @Override
-    public Geometry transform(Geometry input) throws TransformationException {
+    public PlaceTo transform(Place input) throws TransformationException {
 
         try {
-            Geometry buffer = input.buffer(0.01);
-            //buffer.setSRID(input.getSRID());
-            return buffer;
-        } catch (Exception e) {
-            throw new TransformationException(e, input);
+            return new PlaceTo(input.getName(),geoJsonToFactory.toTo(JTS.from(toTargetConvertor.convert(input.getJTSGeometry()))));
+        } catch (GeoTransformationException e) {
+            throw new TransformationException(e);
         }
     }
 }

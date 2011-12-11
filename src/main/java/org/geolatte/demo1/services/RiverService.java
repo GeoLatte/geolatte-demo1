@@ -21,18 +21,16 @@
 
 package org.geolatte.demo1.services;
 
-import org.geolatte.common.transformer.ClosedTransformerChain;
-import org.geolatte.common.transformer.SimpleTransformerSink;
-import org.geolatte.common.transformer.TransformerChainFactory;
+import org.geolatte.common.transformer.*;
+import org.geolatte.demo1.TransferObjects.PlaceTo;
+import org.geolatte.demo1.TransferObjects.PlaceToTransferObject;
 import org.geolatte.demo1.domain.Place;
-import org.geolatte.demo1.geo.LocatablePointAdapter;
 import org.geolatte.demo1.transformers.Buffer;
 import org.geolatte.demo1.transformers.FilterDuplicates;
 import org.geolatte.demo1.transformers.GetCitiesWithinBounds;
 import org.geolatte.demo1.transformers.RiverSegmentSource;
 import org.geolatte.demo1.util.HibernateUtil;
 import org.geolatte.geom.Geometry;
-import org.geolatte.geom.Point;
 import org.hibernate.Session;
 
 import javax.ws.rs.GET;
@@ -52,27 +50,36 @@ import java.util.List;
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
  * @since SDK1.5
  */
-@Path("/rest/river")
+@Path("/rest/flood")
 public class RiverService {
 
     @Path("/cities")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Place> getEndangeredCities(@QueryParam("x") final float x, @QueryParam("y") final float y) {
+    public List<PlaceTo> getEndangeredCities(@QueryParam("x") final float x, @QueryParam("y") final float y) {
 
         try {
             // Begin unit of work
             Session session = HibernateUtil.getSessionFactory().getCurrentSession();
             session.beginTransaction();
 
-            SimpleTransformerSink<Place> sink = new SimpleTransformerSink<Place>();
+            SimpleTransformerSink<PlaceTo> sink = new SimpleTransformerSink<PlaceTo>();
 
-            ClosedTransformerChain chain = TransformerChainFactory.<Geometry, Place>newChain()
-                    .add(new RiverSegmentSource(new LocatablePointAdapter((float)x, (float)y), session))
-                    .add(new Buffer())
-                    .add(new GetCitiesWithinBounds(session))
-                    .addFilter(new FilterDuplicates<Point>())
-                    .last(sink);
+            ClosedTransformerChain chain =
+                    TransformerChainFactory.<Geometry, PlaceTo>newChain()
+                    .add(new RiverSegmentSource(x, y, session))  // <Geometry>
+                    .add(new Buffer())                           // <Geometry> -> <Geometry>
+                    .add(new GetCitiesWithinBounds(session))     // <Geometry> -> [<Place>]
+                    .addFilter(new FilterDuplicates<Place>())    // <Place>    -> <Place>
+                    .add(new PlaceToTransferObject())            // <Place>    -> <PlaceTo>
+                    .last(sink);                                 // collect
+
+            chain.addTransformerEventListener(new TransformerEventListener() {
+                @Override
+                public void ErrorOccurred(TransformerErrorEvent event) {
+                    // Log errors here
+                }
+            });
 
             chain.run();
 

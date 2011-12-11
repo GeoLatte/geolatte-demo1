@@ -25,7 +25,6 @@ import org.geolatte.common.transformer.OneToManyTransformation;
 import org.geolatte.common.transformer.TransformationException;
 import org.geolatte.demo1.domain.Place;
 import org.geolatte.geom.Geometry;
-import org.geolatte.geom.Point;
 import org.geolatte.geom.jts.JTS;
 import org.hibernate.Session;
 import org.hibernatespatial.criterion.SpatialRestrictions;
@@ -41,7 +40,7 @@ import java.util.Iterator;
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
  * @since SDK1.5
  */
-public class GetCitiesWithinBounds implements OneToManyTransformation<Geometry, Point> {
+public class GetCitiesWithinBounds implements OneToManyTransformation<Geometry, Place> {
 
     Session session;
 
@@ -54,7 +53,7 @@ public class GetCitiesWithinBounds implements OneToManyTransformation<Geometry, 
         this.session = session;
     }
 
-    public Iterator<Point> transform(Geometry input) throws TransformationException {
+    public Iterator<Place> transform(Geometry input) throws TransformationException {
 
         try {
 

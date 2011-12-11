@@ -19,11 +19,9 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.transformers;
+package org.geolatte.demo1.util;
 
-import org.geolatte.common.transformer.Transformation;
-import org.geolatte.common.transformer.TransformationException;
-import org.geolatte.geom.Geometry;
+import org.geolatte.graph.Locatable;
 
 /**
  * <p>
@@ -34,28 +32,23 @@ import org.geolatte.geom.Geometry;
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
  * @since SDK1.5
  */
-public class Buffer implements Transformation<Geometry, Geometry> {
+public class LocatablePointAdapter implements Locatable {
 
-    public Buffer() {
+    private float x;
+    private float y;
+
+    public LocatablePointAdapter(float x, float y) {
+        this.x = x;
+        this.y = y;
     }
 
-    /**
-     * Transforms a single input object into an output object.
-     *
-     * @param input The given input
-     * @return The output of the transformation
-     * @throws org.geolatte.common.transformer.TransformationException
-     *          If for some reason, the transformation can not be executed
-     */
     @Override
-    public Geometry transform(Geometry input) throws TransformationException {
+    public float getX() {
+        return x;
+    }
 
-        try {
-            Geometry buffer = input.buffer(0.01);
-            //buffer.setSRID(input.getSRID());
-            return buffer;
-        } catch (Exception e) {
-            throw new TransformationException(e, input);
-        }
+    @Override
+    public float getY() {
+        return y;
     }
 }

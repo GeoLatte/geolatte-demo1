@@ -94,3 +94,6 @@ h6 {
     z-index: 20000;
     background-image: url(../images/logo.png);
 }
+
+#simplemodal-overlay {background-color:#000;}
+#simplemodal-container {background-color:#333; border:8px solid #444; padding:12px;}

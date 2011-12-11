@@ -19,9 +19,9 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.domain;
+package org.geolatte.demo1.TransferObjects;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.geolatte.common.dataformats.json.to.GeoJsonTo;
 
 /**
  * <p>
@@ -32,29 +32,14 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
  * @since SDK1.5
  */
-public class Place {
+public class PlaceTo {
 
-    private long id;
     private String name;
-    private Geometry geometry;
+    private GeoJsonTo location;
 
-    public Place() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Geometry getGeometry() {
-        return geometry;
-    }
-
-    public void setGeometry(Geometry geometry) {
-        this.geometry = geometry;
+    public PlaceTo(String name, GeoJsonTo location) {
+        this.name = name;
+        this.location = location;
     }
 
     public String getName() {
@@ -63,5 +48,13 @@ public class Place {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public GeoJsonTo getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoJsonTo location) {
+        this.location = location;
     }
 }

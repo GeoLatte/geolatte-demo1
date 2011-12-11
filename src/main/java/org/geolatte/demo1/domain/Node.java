@@ -21,7 +21,9 @@
 
 package org.geolatte.demo1.domain;
 
-import com.vividsolutions.jts.geom.Point;
+import org.geolatte.geom.Geometry;
+import org.geolatte.geom.Point;
+import org.geolatte.geom.jts.JTS;
 import org.geolatte.graph.Locatable;
 
 /**
@@ -36,7 +38,7 @@ import org.geolatte.graph.Locatable;
 public class Node implements Locatable {
 
     private long id;
-    private Point location;
+    private com.vividsolutions.jts.geom.Geometry location;
 
     public long getId() {
         return id;
@@ -47,7 +49,19 @@ public class Node implements Locatable {
     }
 
     public Point getLocation() {
+        return (Point)JTS.from(location);
+    }
+
+    public void setLocation(Geometry geometry) {
+        location = JTS.to(geometry);
+    }
+
+    public com.vividsolutions.jts.geom.Geometry getJTSLocation() {
         return location;
+    }
+
+    public void setJTSLocation(com.vividsolutions.jts.geom.Geometry geometry) {
+        location = geometry;
     }
 
     /**
@@ -55,7 +69,7 @@ public class Node implements Locatable {
      */
     @Override
     public float getX() {
-        return (float) location.getX();
+        return (float) ((com.vividsolutions.jts.geom.Point)location).getX();
     }
 
     /**
@@ -63,6 +77,6 @@ public class Node implements Locatable {
      */
     @Override
     public float getY() {
-        return (float) location.getY();
+        return (float) ((com.vividsolutions.jts.geom.Point)location).getY();
     }
 }
