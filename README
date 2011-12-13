@@ -24,6 +24,13 @@ Setup geolatte-featureserver
 
 Setup OSM table
 
+restore pgdatabase.dmp to a db 'osmosis'
+
+pg_restore -U postgres -d osmosis pgdatabase.dmp
+
+
+-- notes ------------------
+
 1) Use Osmosis to import osm data to postgres
 2) Create more useful tables:
 
