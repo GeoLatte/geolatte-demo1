@@ -22,37 +22,22 @@
 package org.geolatte.demo1.services;
 
 import com.vividsolutions.jts.geom.MultiLineString;
-import org.codehaus.jackson.annotate.JsonAnySetter;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * A Transfer Object for rivers.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
-@JsonIgnoreProperties(ignoreUnknown = true) // Works from jackson 1.4
-public class RiverTo {
+public class RiverTO {
 
     private MultiLineString geometry;
     private long id;
 
-    public RiverTo() {
+    public RiverTO() {
     }
-
-    /**
-     * Copy constructor
-     */
-    public RiverTo(RiverTo riverTo) {
-
-        setGeometry(riverTo.getGeometry());
-        setId(riverTo.getId());
-    }
-
 
     public MultiLineString getGeometry() {
         return geometry;
@@ -61,18 +46,4 @@ public class RiverTo {
     public void setGeometry(MultiLineString geometry) {
         this.geometry = geometry;
     }
-
-    @JsonProperty("gid")
-    public long getId() {
-        return id;
-    }
-
-    @JsonProperty("gid")
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    // Ignore non-mapped properties
-    @JsonAnySetter
-    public void handleUnknown(String key, Object value) {}
 }

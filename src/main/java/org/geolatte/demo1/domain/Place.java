@@ -27,12 +27,11 @@ import org.geolatte.geom.jts.JTS;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Represents a place (city, village, etc).
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 public class Place {
 

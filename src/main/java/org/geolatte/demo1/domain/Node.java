@@ -28,12 +28,11 @@ import org.geolatte.graph.Locatable;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Represents a locatable Node (point) in the waterway routing system.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 public class Node implements Locatable {
 

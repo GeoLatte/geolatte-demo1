@@ -26,7 +26,7 @@ import org.geolatte.common.transformer.TransformationException;
 import org.geolatte.demo1.domain.Place;
 import org.geolatte.geom.Geometry;
 import org.geolatte.geom.jts.JTS;
-import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 import org.hibernatespatial.criterion.SpatialRestrictions;
 
 import java.util.Iterator;
@@ -42,9 +42,9 @@ import java.util.Iterator;
  */
 public class GetCitiesWithinBounds implements OneToManyTransformation<Geometry, Place> {
 
-    Session session;
+    StatelessSession session;
 
-    public GetCitiesWithinBounds(Session session) {
+    public GetCitiesWithinBounds(StatelessSession session) {
 
         if (session == null) {
             throw new IllegalArgumentException("Must provide a hibernate session.");

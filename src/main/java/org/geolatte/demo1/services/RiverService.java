@@ -31,7 +31,7 @@ import org.geolatte.demo1.transformers.GetCitiesWithinBounds;
 import org.geolatte.demo1.transformers.RiverSegmentSource;
 import org.geolatte.demo1.util.HibernateUtil;
 import org.geolatte.geom.Geometry;
-import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -43,12 +43,11 @@ import java.util.List;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * The main service entry point of the demo app.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 @Path("/rest/flood")
 public class RiverService {
@@ -58,9 +57,9 @@ public class RiverService {
     @Produces(MediaType.APPLICATION_JSON)
     public List<PlaceTo> getEndangeredCities(@QueryParam("x") final float x, @QueryParam("y") final float y) {
 
+        StatelessSession session = HibernateUtil.getSessionFactory().openStatelessSession();
         try {
             // Begin unit of work
-            Session session = HibernateUtil.getSessionFactory().getCurrentSession();
             session.beginTransaction();
 
             SimpleTransformerSink<PlaceTo> sink = new SimpleTransformerSink<PlaceTo>();
@@ -83,9 +82,15 @@ public class RiverService {
 
             chain.run();
 
-            return sink.getCollectedOutput();
+            List<PlaceTo> endangeredPlaces = sink.getCollectedOutput();
+
+            session.getTransaction().commit();
+
+            return endangeredPlaces;
         } catch (Exception ex) {
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
+        } finally {
+            session.close();
         }
 
         return Collections.emptyList();

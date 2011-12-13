@@ -27,7 +27,7 @@ import java.util.Set;
 
 /**
  * <p>
- * Application class for the flooding app.
+ * The application entry point
  * </p>
  *
  * @author Bert Vanhooff

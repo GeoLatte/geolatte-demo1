@@ -35,7 +35,7 @@ import org.geolatte.geom.jts.JTS;
 import org.geolatte.graph.*;
 import org.geolatte.graph.algorithms.GraphAlgorithm;
 import org.geolatte.graph.algorithms.GraphAlgorithms;
-import org.hibernate.Session;
+import org.hibernate.StatelessSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +57,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
     private static CrsConvertor toSourceConvertor;
 
     // Build the waterway network once
-    private static void buildGraph(Session session) {
+    private static void buildGraph(StatelessSession session) {
 
         if (graph != null) { // already build
             return;
@@ -111,7 +111,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
         }
     }
 
-    public RiverSegmentSource(float x, float y, Session session) {
+    public RiverSegmentSource(float x, float y, StatelessSession session) {
 
         try {
             // Convet from google to lambert (what we use internally in the graph)
@@ -128,7 +128,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
     protected Iterable<Geometry> output() {
 
         // search closest nodes in a range of 1km from the startpoint
-        List<InternalNode<Node, Geometry>> nodesFound = graph.getClosestNodes(startPoint, 1, 1000);
+        List<InternalNode<Node, Geometry>> nodesFound = graph.getClosestNodes(startPoint, 1, 5000);
         if (nodesFound.size() == 0) { return new ArrayList<Geometry>(); }
         Node startNode = nodesFound.get(0).getWrappedNode();
 

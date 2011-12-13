@@ -26,12 +26,11 @@ import org.geolatte.geom.jts.JTS;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Represents a waterway (river, canal, etc.) between two {@link Node}s. Is an edge in the waterway routing system.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 public class Waterway {
 

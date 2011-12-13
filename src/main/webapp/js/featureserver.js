@@ -73,9 +73,9 @@ $(document).ready(function() {
 
                 jQuery.each(data.items, function (indexInArray, feature) {
 
-                    var riverGeometry = geoJsonParser.read(feature.geometry, 'Geometry').transform(
-                                                                                    new OpenLayers.Projection("EPSG:3035"),
-                                                                                    new OpenLayers.Projection("EPSG:900913"));
+                    var riverGeometry = geoJsonParser.read(feature.properties.the_geom, 'Geometry').transform(
+                                                                                    new OpenLayers.Projection("EPSG:3035"),    // LAEA
+                                                                                    new OpenLayers.Projection("EPSG:900913")); // Spherical Mercator (Google)
                     var riverFeature = new OpenLayers.Feature.Vector(riverGeometry, null, style_blue);
                     riverLayer.addFeatures([riverFeature]);
                 });
