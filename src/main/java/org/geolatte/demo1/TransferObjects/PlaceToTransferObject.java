@@ -46,7 +46,7 @@ public class PlaceToTransferObject implements Transformation<Place, PlaceTo> {
 
     static {
         try {
-            toTargetConvertor = CrsConvertorFactory.createConvertor(4326, 900913);
+            toTargetConvertor = CrsConvertorFactory.createConvertor(3035, 900913);
         } catch (GeoTransformationException e) {
             e.printStackTrace();
         }

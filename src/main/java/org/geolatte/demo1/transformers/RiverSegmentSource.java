@@ -31,7 +31,6 @@ import org.geolatte.demo1.util.GeoTransformationException;
 import org.geolatte.demo1.util.LocatablePointAdapter;
 import org.geolatte.geom.Envelope;
 import org.geolatte.geom.Geometry;
-import org.geolatte.geom.jts.JTS;
 import org.geolatte.graph.*;
 import org.geolatte.graph.algorithms.GraphAlgorithm;
 import org.geolatte.graph.algorithms.GraphAlgorithms;
@@ -67,45 +66,19 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
         waterways = (List<Waterway>) session.createCriteria(Waterway.class).list();
 
         try {
-            final int sourceSrid = waterways.get(0).getGeometry().getSRID();
-            final int targetSrid = 31370;
-            CrsConvertor toTargetConvertor = CrsConvertorFactory.createConvertor(
-                    sourceSrid,
-                    targetSrid);
-            toSourceConvertor = CrsConvertorFactory.createConvertor(
-                    targetSrid,
-                    sourceSrid);
 
-            Coordinate[] bbox = toTargetConvertor.convert(new Coordinate[] {new Coordinate(2.33, 49.3), new Coordinate(6.6, 51.6)});
-
-            Envelope envelope = new Envelope(bbox[0].x, bbox[0].y, bbox[1].x, bbox[1].y);
+            Envelope envelope = new Envelope(3000000, 2000000, 4500000, 3300000);
             GraphBuilder<Node, Geometry> graphBuilder = Graphs.createGridIndexedGraphBuilder(envelope, 20000);
 
             for (Waterway waterway : waterways) {
 
-                // Convert points to lambert
-                waterway.setJTSGeometry(toTargetConvertor.convert(waterway.getJTSGeometry()));
-                if (waterway.getBeginNode().getJTSLocation().getSRID() != targetSrid) {
-                    waterway.getBeginNode().setJTSLocation(toTargetConvertor.convert(waterway.getBeginNode().getJTSLocation()));
-                }
-                if (waterway.getEndNode().getJTSLocation().getSRID() != targetSrid) {
-                    waterway.getEndNode().setJTSLocation(toTargetConvertor.convert(waterway.getEndNode().getJTSLocation()));
-                }
-
-
-                if (waterway.getBeginNode() != null && waterway.getEndNode() != null) {
-                    //if (envelope.contains(waterway.getBeginNode().getLocation()) &&  envelope.contains(waterway.getEndNode().getLocation())) {
-                        graphBuilder.addEdge(waterway.getBeginNode(), waterway.getEndNode(), new BasicEdgeWeight(1), waterway.getGeometry());
-                    //}
-                }
+                graphBuilder.addEdge(waterway.getBeginNode(), waterway.getEndNode(), new BasicEdgeWeight(1), waterway.getGeometry());
             }
 
             graph = graphBuilder.build();
 
         } catch (BuilderException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (GeoTransformationException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,9 +88,9 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
 
         try {
             // Convet from google to lambert (what we use internally in the graph)
-            CrsConvertor convertor = CrsConvertorFactory.createConvertor(900913, 31370);
+            CrsConvertor convertor = CrsConvertorFactory.createConvertor(900913, 3035);
             Coordinate[] coordinate = convertor.convert(new Coordinate[]{new Coordinate(y, x)});
-            this.startPoint = new LocatablePointAdapter((float)coordinate[0].x, (float)coordinate[0].y);
+            this.startPoint = new LocatablePointAdapter((float) coordinate[0].x, (float) coordinate[0].y);
             buildGraph(session);
         } catch (GeoTransformationException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -128,8 +101,10 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
     protected Iterable<Geometry> output() {
 
         // search closest nodes in a range of 1km from the startpoint
-        List<InternalNode<Node, Geometry>> nodesFound = graph.getClosestNodes(startPoint, 1, 5000);
-        if (nodesFound.size() == 0) { return new ArrayList<Geometry>(); }
+        List<InternalNode<Node, Geometry>> nodesFound = graph.getClosestNodes(startPoint, 1, 20000);
+        if (nodesFound.size() == 0) {
+            return new ArrayList<Geometry>();
+        }
         Node startNode = nodesFound.get(0).getWrappedNode();
 
         // Create and execute breath-first-limited search (find all routes downstream of the startingpoint)
@@ -144,11 +119,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
                 continue;
             }
 
-            try {
-                resultGeometries.add(JTS.from(toSourceConvertor.convert(JTS.to(iterator.getCurrentEdge()))));
-            } catch (GeoTransformationException e) {
-                e.printStackTrace();
-            }
+            resultGeometries.add(iterator.getCurrentEdge());
         }
 
         return resultGeometries;

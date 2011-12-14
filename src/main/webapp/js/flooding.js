@@ -76,11 +76,32 @@ $(document).ready(function() {
     var floodingLayer = new OpenLayers.Layer.Vector("flooding");
     map.addLayer(floodingLayer);
 
+
+    var selectControl = new OpenLayers.Control.SelectFeature(floodingLayer,
+            {onSelect: function(feature) {
+                selectedFeature = feature;
+                popup = new OpenLayers.Popup.FramedCloud("popup",
+                        feature.geometry.getBounds().getCenterLonLat(),
+                        null,
+                        "<div style='font-size:.8em'>Commune: " + feature.attributes.name + "</div>",
+                        null, true, function (evt) {
+                            selectControl.unselect(selectedFeature);
+                        });
+                feature.popup = popup;
+                map.addPopup(popup);
+            }, onUnselect: function(feature) {
+                map.removePopup(feature.popup);
+                feature.popup.destroy();
+                feature.popup = null;
+            }});
+    map.addControl(selectControl);
+    selectControl.activate();
+
     // Layer style
 
     var style_red = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
     style_red.strokeColor = "red";
-    style_red.strokeWidth = 5;
+    style_red.strokeWidth = 3;
     style_red.strokeLinecap = "round";
 
 
@@ -110,9 +131,9 @@ $(document).ready(function() {
 
                 jQuery.each(data, function (indexInArray, feature) {
 
-                    var cityGeometry = geoJsonParser.read(feature.location);
-                    //var cityFeature = new OpenLayers.Feature.Vector(cityGeometry, null, style_red);
-                    floodingLayer.addFeatures(cityGeometry);
+                    var cityGeometry = geoJsonParser.read(feature.location, 'Geometry');
+                    var cityFeature = new OpenLayers.Feature.Vector(cityGeometry, {name : feature.name}, style_red);
+                    floodingLayer.addFeatures(cityFeature);
                 });
             },
             error: function() {

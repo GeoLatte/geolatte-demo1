@@ -24,16 +24,15 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="org.geolatte.demo1.domain.Waterway" table="waterways">
+    <class name="org.geolatte.demo1.domain.Waterway" table="belgiumsegments">
 
-        <id name="id" column="id"/>
+        <id name="id" column="gid"/>
 
-        <property name="name" column="name"/>
         <!-- Map to field so we can keep the interface geolatte.geom -->
-        <property name="geometry" type="org.hibernatespatial.GeometryUserType" column="geom" access="field"/>
+        <property name="geometry" type="org.hibernatespatial.GeometryUserType" column="the_geom" access="field"/>
 
-        <many-to-one name="beginNode" column="beginnode_id" lazy="false" not-found="ignore"/>
-        <many-to-one name="endNode" column="endnode_id" lazy="false" not-found="ignore"/>
+        <many-to-one name="beginNode" column="fromnode" lazy="false"/>
+        <many-to-one name="endNode" column="tonode" lazy="false"/>
 
     </class>
 </hibernate-mapping>

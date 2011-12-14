@@ -24,11 +24,11 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
 
-    <class name="org.geolatte.demo1.domain.Node" table="nodes">
+    <class name="org.geolatte.demo1.domain.Node" table="rivernodes">
 
         <id name="id" column="id"/>
 
-        <property name="location" type="org.hibernatespatial.GeometryUserType" column="geom" access="field">
+        <property name="location" type="org.hibernatespatial.GeometryUserType" column="the_geom" access="field">
         </property>
         
     </class>

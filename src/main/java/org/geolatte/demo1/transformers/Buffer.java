@@ -51,7 +51,7 @@ public class Buffer implements Transformation<Geometry, Geometry> {
     public Geometry transform(Geometry input) throws TransformationException {
 
         try {
-            Geometry buffer = input.buffer(0.01);
+            Geometry buffer = input.buffer(1000);
             //buffer.setSRID(input.getSRID());
             return buffer;
         } catch (Exception e) {

@@ -76,7 +76,7 @@ public class RiverService {
             chain.addTransformerEventListener(new TransformerEventListener() {
                 @Override
                 public void ErrorOccurred(TransformerErrorEvent event) {
-                    // Log errors here
+                    System.err.println("Transformer error : " + event.getNestedEvent());
                 }
             });
 

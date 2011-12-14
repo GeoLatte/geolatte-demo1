@@ -57,9 +57,11 @@ public class GetCitiesWithinBounds implements OneToManyTransformation<Geometry, 
 
         try {
 
-            return session.createCriteria(Place.class)
-                          .add(SpatialRestrictions.within("geometry", JTS.to(input)))
-                          .list().iterator();
+            Iterator it = session.createCriteria(Place.class)
+                    .add(SpatialRestrictions.within("geometry", JTS.to(input)))
+                    .list().iterator();
+
+            return it;
         } catch (Exception e) {
             throw new TransformationException(e, input);
         }
