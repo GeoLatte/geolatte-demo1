@@ -24,24 +24,22 @@
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-    <display-name>Archetype Created Web Application</display-name>
+    <display-name>Geolatte - demo</display-name>
 
     <context-param>
-		<param-name>resteasy.resources</param-name>
-		<param-value>org.geolatte.demo1.services.RiverService</param-value>
-	</context-param>
+        <param-name>resteasy.resources</param-name>
+        <param-value>org.geolatte.demo1.services.FloodingService</param-value>
+    </context-param>
 
+    <!-- RESTEasy servelet -->
     <servlet>
         <servlet-name>Resteasy</servlet-name>
         <servlet-class>
             org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
         </servlet-class>
-        <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>org.geolatte.demo1.services.FloodingApplication</param-value>
-        </init-param>
     </servlet>
 
+    <!-- Everything after rest goes to RESTEasy -->
     <servlet-mapping>
         <servlet-name>Resteasy</servlet-name>
         <url-pattern>/rest/*</url-pattern>

@@ -41,15 +41,13 @@ import java.util.List;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Calculates the downstream path of the waterway network starting from a given starting point.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 public class RiverSegmentSource extends TransformerSource<Geometry> {
-
 
     private static LocateableGraph<Node, Geometry> graph;
     private Locatable startPoint;
@@ -58,27 +56,19 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
     // Build the waterway network once
     private static void buildGraph(StatelessSession session) {
 
-        if (graph != null) { // already build
-            return;
-        }
-
-        List<Waterway> waterways = null;
-        waterways = (List<Waterway>) session.createCriteria(Waterway.class).list();
+        if (graph != null) { return; } // already build
 
         try {
+            GraphBuilder<Node, Geometry> graphBuilder = Graphs.createGridIndexedGraphBuilder(new Envelope(3000000, 2000000, 4500000, 3300000), 20000);
 
-            Envelope envelope = new Envelope(3000000, 2000000, 4500000, 3300000);
-            GraphBuilder<Node, Geometry> graphBuilder = Graphs.createGridIndexedGraphBuilder(envelope, 20000);
-
-            for (Waterway waterway : waterways) {
-
+            for (Waterway waterway : (List<Waterway>) session.createCriteria(Waterway.class).list()) {
                 graphBuilder.addEdge(waterway.getBeginNode(), waterway.getEndNode(), new BasicEdgeWeight(1), waterway.getGeometry());
             }
 
             graph = graphBuilder.build();
 
         } catch (BuilderException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,24 +77,22 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
     public RiverSegmentSource(float x, float y, StatelessSession session) {
 
         try {
-            // Convet from google to lambert (what we use internally in the graph)
+            // Convert from google to lambert (what we use internally in the graph)
             CrsConvertor convertor = CrsConvertorFactory.createConvertor(900913, 3035);
             Coordinate[] coordinate = convertor.convert(new Coordinate[]{new Coordinate(y, x)});
             this.startPoint = new LocatablePointAdapter((float) coordinate[0].x, (float) coordinate[0].y);
             buildGraph(session);
         } catch (GeoTransformationException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
     @Override
     protected Iterable<Geometry> output() {
 
-        // search closest nodes in a range of 1km from the startpoint
+        // search closest nodes in a range of 20km from the given startpoint
         List<InternalNode<Node, Geometry>> nodesFound = graph.getClosestNodes(startPoint, 1, 20000);
-        if (nodesFound.size() == 0) {
-            return new ArrayList<Geometry>();
-        }
+        if (nodesFound.size() == 0) { return new ArrayList<Geometry>(); }
         Node startNode = nodesFound.get(0).getWrappedNode();
 
         // Create and execute breath-first-limited search (find all routes downstream of the startingpoint)

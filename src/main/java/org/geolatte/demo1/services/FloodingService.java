@@ -22,13 +22,9 @@
 package org.geolatte.demo1.services;
 
 import org.geolatte.common.transformer.*;
-import org.geolatte.demo1.TransferObjects.PlaceTo;
-import org.geolatte.demo1.TransferObjects.PlaceToTransferObject;
+import org.geolatte.demo1.transformers.PlaceToTransferObject;
 import org.geolatte.demo1.domain.Place;
-import org.geolatte.demo1.transformers.Buffer;
-import org.geolatte.demo1.transformers.FilterDuplicates;
-import org.geolatte.demo1.transformers.GetCitiesWithinBounds;
-import org.geolatte.demo1.transformers.RiverSegmentSource;
+import org.geolatte.demo1.transformers.*;
 import org.geolatte.demo1.util.HibernateUtil;
 import org.geolatte.geom.Geometry;
 import org.hibernate.StatelessSession;
@@ -50,7 +46,7 @@ import java.util.List;
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
  */
 @Path("/rest/flood")
-public class RiverService {
+public class FloodingService {
 
     @Path("/cities")
     @GET
@@ -62,17 +58,18 @@ public class RiverService {
             // Begin unit of work
             session.beginTransaction();
 
+            // Create the transformer chain
             SimpleTransformerSink<PlaceTo> sink = new SimpleTransformerSink<PlaceTo>();
-
             ClosedTransformerChain chain =
                     TransformerChainFactory.<Geometry, PlaceTo>newChain()
-                    .add(new RiverSegmentSource(x, y, session))  // <Geometry>
-                    .add(new Buffer())                           // <Geometry> -> <Geometry>
-                    .add(new GetCitiesWithinBounds(session))     // <Geometry> -> [<Place>]
-                    .addFilter(new FilterDuplicates<Place>())    // <Place>    -> <Place>
-                    .add(new PlaceToTransferObject())            // <Place>    -> <PlaceTo>
-                    .last(sink);                                 // collect
+                    .add(new RiverSegmentSource(x, y, session))  // Get flooded waterway-segments  \ Geometry)
+                    .add(new Buffer())                           // Expand the segments            \ Geometry -> Geometry
+                    .add(new GetCitiesWithinBounds(session))     // Get the cities within segments \ Geometry -> [Place]
+                    .addFilter(new FilterDuplicates<Place>())    // Filter out duplicates          \ Place    -> Place
+                    .add(new PlaceToTransferObject())            // Prepare for serialisation      \ Place    -> PlaceTo
+                    .last(sink);                                 // collect results
 
+            // Listen for errors
             chain.addTransformerEventListener(new TransformerEventListener() {
                 @Override
                 public void ErrorOccurred(TransformerErrorEvent event) {
@@ -80,13 +77,12 @@ public class RiverService {
                 }
             });
 
+            // Run the chain
             chain.run();
 
-            List<PlaceTo> endangeredPlaces = sink.getCollectedOutput();
-
             session.getTransaction().commit();
+            return sink.getCollectedOutput();
 
-            return endangeredPlaces;
         } catch (Exception ex) {
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
         } finally {

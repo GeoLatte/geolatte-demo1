@@ -19,18 +19,17 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.TransferObjects;
+package org.geolatte.demo1.services;
 
 import org.geolatte.common.dataformats.json.to.GeoJsonTo;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Transfer Object for Place objects
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 public class PlaceTo {
 

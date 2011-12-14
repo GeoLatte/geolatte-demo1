@@ -28,7 +28,7 @@ import java.util.HashSet;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Filters duplicate objects.
  * </p>
  *
  * @author Bert Vanhooff

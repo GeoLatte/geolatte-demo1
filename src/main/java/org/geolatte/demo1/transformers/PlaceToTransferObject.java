@@ -19,11 +19,12 @@
  * Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
  */
 
-package org.geolatte.demo1.TransferObjects;
+package org.geolatte.demo1.transformers;
 
 import org.geolatte.common.dataformats.json.GeoJsonToFactory;
 import org.geolatte.common.transformer.Transformation;
 import org.geolatte.common.transformer.TransformationException;
+import org.geolatte.demo1.services.PlaceTo;
 import org.geolatte.demo1.domain.Place;
 import org.geolatte.demo1.util.CrsConvertor;
 import org.geolatte.demo1.util.CrsConvertorFactory;
@@ -32,12 +33,11 @@ import org.geolatte.geom.jts.JTS;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Transforms place to data transfer objects.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 public class PlaceToTransferObject implements Transformation<Place, PlaceTo> {
 
@@ -51,7 +51,6 @@ public class PlaceToTransferObject implements Transformation<Place, PlaceTo> {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public PlaceTo transform(Place input) throws TransformationException {

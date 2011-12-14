@@ -27,32 +27,19 @@ import org.geolatte.geom.Geometry;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Encapsulates a 1km buffer operation.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 public class Buffer implements Transformation<Geometry, Geometry> {
 
-    public Buffer() {
-    }
-
-    /**
-     * Transforms a single input object into an output object.
-     *
-     * @param input The given input
-     * @return The output of the transformation
-     * @throws org.geolatte.common.transformer.TransformationException
-     *          If for some reason, the transformation can not be executed
-     */
     @Override
     public Geometry transform(Geometry input) throws TransformationException {
 
         try {
             Geometry buffer = input.buffer(1000);
-            //buffer.setSRID(input.getSRID());
             return buffer;
         } catch (Exception e) {
             throw new TransformationException(e, input);

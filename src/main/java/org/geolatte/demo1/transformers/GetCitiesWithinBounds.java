@@ -33,35 +33,26 @@ import java.util.Iterator;
 
 /**
  * <p>
- * No comment provided yet for this class.
+ * Gets the cities within the bounds of a given geometry.
  * </p>
  *
  * @author Bert Vanhooff
  * @author <a href="http://www.qmino.com">Qmino bvba</a>
- * @since SDK1.5
  */
 public class GetCitiesWithinBounds implements OneToManyTransformation<Geometry, Place> {
 
     StatelessSession session;
 
     public GetCitiesWithinBounds(StatelessSession session) {
-
-        if (session == null) {
-            throw new IllegalArgumentException("Must provide a hibernate session.");
-        }
-
         this.session = session;
     }
 
     public Iterator<Place> transform(Geometry input) throws TransformationException {
 
         try {
-
-            Iterator it = session.createCriteria(Place.class)
+            return session.createCriteria(Place.class)
                     .add(SpatialRestrictions.within("geometry", JTS.to(input)))
                     .list().iterator();
-
-            return it;
         } catch (Exception e) {
             throw new TransformationException(e, input);
         }
