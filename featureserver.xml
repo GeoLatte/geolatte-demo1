@@ -22,6 +22,7 @@
 <!-- Featureserver Configuration file -->
 <!-- Adapt to your system (url, username/password) -->
 <FeatureServerConfig>
+
     <HibernateConfiguration>
         <!-- Any hibernate property can be placed here -->
         <property name="connection.driver_class">org.postgresql.Driver</property>
@@ -32,21 +33,11 @@
         <property name="show_sql">false</property>
         <property name="current_session_context_class">thread</property>
         <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
-        <!--
-        <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
-        <property name="c3p0.acquire_increment">1</property>
-        <property name="c3p0.idle_test_period">100</property>
-        <property name="c3p0.max_size">5</property>
-        <property name="c3p0.max_statements">0</property>
-        <property name="c3p0.min_size">1</property>
-        <property name="c3p0.timeout">100</property>
-        -->
     </HibernateConfiguration>
+
     <Mapping>
         <Tables>
             <Schema>public</Schema>
-            <!--
-                 -->
             <Include>
                 <Item>river*</Item>
             </Include>
@@ -54,4 +45,5 @@
             </Exclude>
         </Tables>
     </Mapping>
+
 </FeatureServerConfig>

@@ -22,7 +22,6 @@
 package org.geolatte.demo1.services;
 
 import org.geolatte.common.transformer.*;
-import org.geolatte.demo1.transformers.PlaceToTransferObject;
 import org.geolatte.demo1.domain.Place;
 import org.geolatte.demo1.transformers.*;
 import org.geolatte.demo1.util.HibernateUtil;
@@ -58,29 +57,31 @@ public class FloodingService {
             // Begin unit of work
             session.beginTransaction();
 
-            // Create the transformer chain
             SimpleTransformerSink<PlaceTo> sink = new SimpleTransformerSink<PlaceTo>();
-            ClosedTransformerChain chain =
-                    TransformerChainFactory.<Geometry, PlaceTo>newChain()
-                    .add(new RiverSegmentSource(x, y, session))  // Get flooded waterway-segments  \ Geometry)
-                    .add(new Buffer())                           // Expand the segments            \ Geometry -> Geometry
-                    .add(new GetCitiesWithinBounds(session))     // Get the cities within segments \ Geometry -> [Place]
-                    .addFilter(new FilterDuplicates<Place>())    // Filter out duplicates          \ Place    -> Place
-                    .add(new PlaceToTransferObject())            // Prepare for serialisation      \ Place    -> PlaceTo
-                    .last(sink);                                 // collect results
+            // Create the transformer chain
+            ClosedTransformerChain chain = TransformerChainFactory.<Geometry, PlaceTo>newChain()
+                    .add(new RiverSegmentSource(x, y, session))
+                    .add(new Buffer())
+                    .add(new GetCitiesWithinBounds(session))
+                    .addFilter(new FilterDuplicates<Place>())
+                    .add(new PlaceToTransferObject())
+                    .last(sink);
 
             // Listen for errors
             chain.addTransformerEventListener(new TransformerEventListener() {
                 @Override
                 public void ErrorOccurred(TransformerErrorEvent event) {
-                    System.err.println("Transformer error : " + event.getNestedEvent());
+                    ;
                 }
             });
 
             // Run the chain
             chain.run();
 
+            // Commit transaction
             session.getTransaction().commit();
+
+            // return results
             return sink.getCollectedOutput();
 
         } catch (Exception ex) {
