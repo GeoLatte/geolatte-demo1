@@ -9,8 +9,7 @@ Prerequisites
 
 Setup geolatte-featureserver
 
-1) Download the featureserver war from https://oss.sonatype.org/content/groups/public/org/geolatte/geolatte-featureserver/0.4-SNAPSHOT/
-   Demo was tested with geolatte-featureserver-0.4-20111129.062659-3.war
+1) Download the featureserver war from https://oss.sonatype.org/content/groups/public/org/geolatte/geolatte-featureserver/0.6.1/geolatte-featureserver-0.6.1.war
 2) Create a featureserver configuration file (instructions on http://www.geolatte.org/confluence/display/fserv/FeatureServer+configuration)
    You can use the featureserver.xml file included in this project as a basis.
 3) Make sure Tomcat knows the config file. E.g., add JAVA_OPTS="-Dgeolatte.fs.config=/Library/Tomcat/apache-tomcat-7.0.19/webapps/featureserver.xml"
