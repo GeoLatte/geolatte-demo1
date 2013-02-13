@@ -62,6 +62,12 @@
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
 
+      <repository>
+        <id>hibernate_spatial</id>
+        <url>http://www.hibernatespatial.org/repository/</url>
+      </repository>
+
+
         <repository> <!-- for scannotation 1.0.3 (transitive resteady dependency) -->
             <id>jboss-3rdparty</id>
             <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
