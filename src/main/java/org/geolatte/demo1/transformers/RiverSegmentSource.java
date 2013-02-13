@@ -78,8 +78,8 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
 
             Coordinate[] bbox = toTargetConvertor.convert(new Coordinate[] {new Coordinate(2.33, 49.3), new Coordinate(6.6, 51.6)});
 
-            Envelope envelope = new Envelope(bbox[0].x, bbox[0].y, bbox[1].x, bbox[1].y);
-            GraphBuilder<Node, Geometry> graphBuilder = Graphs.createGridIndexedGraphBuilder(envelope, 20000);
+            Extent extent = new Extent(bbox[0].x, bbox[0].y, bbox[1].x, bbox[1].y);
+            GraphBuilder<Node, Geometry> graphBuilder = Graphs.createGridIndexedGraphBuilder(extent, 20000);
 
             for (Waterway waterway : waterways) {
 
@@ -94,7 +94,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
 
 
                 if (waterway.getBeginNode() != null && waterway.getEndNode() != null) {
-                    //if (envelope.contains(waterway.getBeginNode().getLocation()) &&  envelope.contains(waterway.getEndNode().getLocation())) {
+                    //if (extent.contains(waterway.getBeginNode().getLocation()) &&  extent.contains(waterway.getEndNode().getLocation())) {
                         graphBuilder.addEdge(waterway.getBeginNode(), waterway.getEndNode(), new BasicEdgeWeight(1), waterway.getGeometry());
                     //}
                 }

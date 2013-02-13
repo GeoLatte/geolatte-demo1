@@ -21,7 +21,7 @@
 
 package org.geolatte.demo1.TransferObjects;
 
-import org.geolatte.common.dataformats.json.GeoJsonToFactory;
+import org.geolatte.common.dataformats.json.to.GeoJsonToAssembler;
 import org.geolatte.common.transformer.Transformation;
 import org.geolatte.common.transformer.TransformationException;
 import org.geolatte.demo1.domain.Place;
@@ -41,7 +41,7 @@ import org.geolatte.geom.jts.JTS;
  */
 public class PlaceToTransferObject implements Transformation<Place, PlaceTo> {
 
-    private GeoJsonToFactory geoJsonToFactory = new GeoJsonToFactory();
+    private GeoJsonToAssembler geoJsonToFactory = new GeoJsonToAssembler();
     private static CrsConvertor toTargetConvertor;
 
     static {
@@ -57,7 +57,7 @@ public class PlaceToTransferObject implements Transformation<Place, PlaceTo> {
     public PlaceTo transform(Place input) throws TransformationException {
 
         try {
-            return new PlaceTo(input.getName(),geoJsonToFactory.toTo(JTS.from(toTargetConvertor.convert(input.getJTSGeometry()))));
+            return new PlaceTo(input.getName(),geoJsonToFactory.toTransferObject( JTS.from(toTargetConvertor.convert(input.getJTSGeometry()))));
         } catch (GeoTransformationException e) {
             throw new TransformationException(e);
         }
