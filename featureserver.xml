@@ -25,7 +25,7 @@
     <HibernateConfiguration>
         <!-- Any hibernate property can be placed here -->
         <property name="connection.driver_class">org.postgresql.Driver</property>
-        <property name="connection.url">jdbc:postgresql://localhost:5432/rivers</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/osmosis</property>
         <property name="connection.username">postgres</property>
         <property name="connection.password">postgres</property>
         <property name="dialect">org.hibernatespatial.postgis.PostgisDialect</property>
@@ -48,7 +48,8 @@
             <!--
                  -->
             <Include>
-                <Item>river*</Item>
+                <Item>waterways</Item>
+                <Item>places</Item>
             </Include>
             <Exclude>
             </Exclude>

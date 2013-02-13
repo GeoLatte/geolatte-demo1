@@ -61,7 +61,7 @@ $(document).ready(function() {
             //alert("You clicked near " + lonlat.lat + " N, " +
             //                          + lonlat.lon + " E");
             var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
-            doQuery(lonlat.lat, lonlat.lon);
+            doQuery(lonlat.lon, lonlat.lat);
         }
 
     });
@@ -110,9 +110,10 @@ $(document).ready(function() {
 
                 jQuery.each(data, function (indexInArray, feature) {
 
-                    var cityGeometry = geoJsonParser.read(feature.location);
-                    //var cityFeature = new OpenLayers.Feature.Vector(cityGeometry, null, style_red);
-                    floodingLayer.addFeatures(cityGeometry);
+                    feature.location.type = 'Point';
+                    var cityGeometry = geoJsonParser.read(feature.location, 'Geometry');
+                    var cityFeature = new OpenLayers.Feature.Vector(cityGeometry, null, style_red);
+                    floodingLayer.addFeatures(cityFeature);
                 });
             },
             error: function() {
