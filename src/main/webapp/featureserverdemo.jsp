@@ -43,12 +43,12 @@
         <ul>
         <li>Serves European rivers Db</li>
         <li>/featureserver/rest/</li>
-        <li>Try int_name = 'Scheldt'</li>
+        <li>Try name = 'Kleine Nete'</li>
         <li><a href="/featureserver/rest/tables">tables</a></li>
         </ul>
     </p>
     <label for="search">Params</label>
-    <input style="width:180px" type="text" name="search" value="int_name ilike 'Scheldt' OR int_name ilike 'Meuse'" id="search" />
+    <input style="width:180px" type="text" name="search" value="name ilike 'Kleine Nete' OR name ilike 'Kanaal van %'" id="search" />
     <button>submit</button>
 </div>
 

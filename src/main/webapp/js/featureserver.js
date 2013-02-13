@@ -35,7 +35,7 @@ $(document).ready(function() {
 
     // Create a layer where we will show rivers
 
-    var riverLayer = new OpenLayers.Layer.Vector("rivers");
+    var riverLayer = new OpenLayers.Layer.Vector("waterways");
     map.addLayer(riverLayer);
 
     // Layer style
@@ -62,11 +62,11 @@ $(document).ready(function() {
 
         $.ajax({
             type: 'GET',
-            url: '/featureserver/rest/tables/rivers',
+            url: '/featureserver/rest/tables/waterways',
             accepts: {json : "application/json"},
             dataType: 'json',
             data: {
-                //int_name ilike 'Scheldt' OR int_name ilike 'Meuse'
+                //name ilike 'Kleine Nete' OR name ilike 'Kanaal van %'
                 cql: queryParams
             },
             success: function(data) {
