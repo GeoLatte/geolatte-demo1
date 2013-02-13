@@ -49,6 +49,7 @@
                  -->
             <Include>
                 <Item>waterways</Item>
+                <Item>places</Item>
             </Include>
             <Exclude>
             </Exclude>
