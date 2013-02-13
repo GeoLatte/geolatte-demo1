@@ -116,7 +116,7 @@ public class RiverSegmentSource extends TransformerSource<Geometry> {
         try {
             // Convet from google to lambert (what we use internally in the graph)
             CrsConvertor convertor = CrsConvertorFactory.createConvertor(900913, 31370);
-            Coordinate[] coordinate = convertor.convert(new Coordinate[]{new Coordinate(y, x)});
+            Coordinate[] coordinate = convertor.convert(new Coordinate[]{new Coordinate(x, y)});
             this.startPoint = new LocatablePointAdapter((float)coordinate[0].x, (float)coordinate[0].y);
             buildGraph(session);
         } catch (GeoTransformationException e) {
