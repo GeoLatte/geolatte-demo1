@@ -58,7 +58,7 @@
         </repository>
 
         <repository>
-            <id>jboss</id>
+            <id>jboss_nexus</id>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
 
