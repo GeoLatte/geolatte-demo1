@@ -159,7 +159,7 @@
         <dependency>
             <groupId>org.geolatte</groupId>
             <artifactId>geolatte-common</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6</version>
         </dependency>
 
         <dependency>
