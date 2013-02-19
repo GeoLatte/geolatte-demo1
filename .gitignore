@@ -5,3 +5,4 @@ atlassian-ide-plugin.xml
 *.iws
 target
 javadoc/*
+/artifacts

@@ -58,9 +58,15 @@
         </repository>
 
         <repository>
-            <id>jboss</id>
+            <id>jboss_nexus</id>
             <url>http://repository.jboss.org/nexus/content/groups/public/</url>
         </repository>
+
+      <repository>
+        <id>hibernate_spatial</id>
+        <url>http://www.hibernatespatial.org/repository/</url>
+      </repository>
+
 
         <repository> <!-- for scannotation 1.0.3 (transitive resteady dependency) -->
             <id>jboss-3rdparty</id>
@@ -142,18 +148,11 @@
             <version>2.5</version>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <!-- GeoLatte -->
         <dependency>
             <groupId>org.geolatte</groupId>
             <artifactId>geolatte-common</artifactId>
-            <version>0.5-SNAPSHOT</version>
+            <version>0.6</version>
         </dependency>
 
         <dependency>
